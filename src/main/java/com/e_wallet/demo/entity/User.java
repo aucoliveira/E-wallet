@@ -18,12 +18,12 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Wallet wallet;
 
-    public User(){}
+    public User() {}
 
-    public User(Long id, String email, Wallet walelet) {
+    public User(Long id, String email, Wallet wallet) {
         this.id = id;
         this.email = email;
-        this.wallet = walelet;
+        this.wallet = wallet;
     }
 
     public Long getId() {
@@ -42,12 +42,12 @@ public class User {
         this.email = email;
     }
 
-    public Wallet getWalelet() {
+    public Wallet getWallet() {
         return wallet;
     }
 
-    public void setWalelet(Wallet walelet) {
-        this.wallet = walelet;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", walelet=" + wallet +
+                ", wallet=" + wallet +
                 '}';
     }
 }
