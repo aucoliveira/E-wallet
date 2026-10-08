@@ -12,8 +12,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Wallet wallet;
@@ -23,6 +26,13 @@ public class User {
     public User(Long id, String email, Wallet wallet) {
         this.id = id;
         this.email = email;
+        this.wallet = wallet;
+    }
+
+    public User(Long id, String email, String password, Wallet wallet) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
         this.wallet = wallet;
     }
 
@@ -40,6 +50,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Wallet getWallet() {
