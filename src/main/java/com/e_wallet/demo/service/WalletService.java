@@ -22,13 +22,35 @@ public class WalletService {
         Wallet receiver = walletRepository.findByUserId(receiverId)
                 .orElseThrow(() -> new RuntimeException("Destinatário não encontrado"));
 
-        // 2. Executar a operação
         sender.debit(amount);
         receiver.credit(amount);
 
-        // 3. Guardar alterações
         walletRepository.save(sender);
         walletRepository.save(receiver);
     }
 
+    @Transactional
+    public void deposit(Long userId, BigDecimal amount) {
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        wallet.credit(amount);
+        walletRepository.save(wallet);
+    }
+
+    @Transactional
+    public void withdraw(Long userId, BigDecimal amount) {
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        wallet.debit(amount);
+        walletRepository.save(wallet);
+    }
+
+    public BigDecimal getBalance(Long userId) {
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        return wallet.getBalance();
+    }
 }

@@ -99,4 +99,50 @@ class WalletServiceTest {
 
         assertEquals("Destinatário não encontrado", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Should deposit amount to user wallet")
+    void testDepositSuccess() {
+        when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(senderWallet));
+
+        walletService.deposit(1L, new BigDecimal("50.00"));
+
+        assertEquals(new BigDecimal("150.00"), senderWallet.getBalance());
+        verify(walletRepository).save(senderWallet);
+    }
+
+    @Test
+    @DisplayName("Should withdraw amount from user wallet")
+    void testWithdrawSuccess() {
+        when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(senderWallet));
+
+        walletService.withdraw(1L, new BigDecimal("40.00"));
+
+        assertEquals(new BigDecimal("60.00"), senderWallet.getBalance());
+        verify(walletRepository).save(senderWallet);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when withdraw amount exceeds balance")
+    void testWithdrawInsufficientBalance() {
+        when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(senderWallet));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                walletService.withdraw(1L, new BigDecimal("200.00"))
+        );
+
+        assertEquals("Saldo insuficiente", exception.getMessage());
+        assertEquals(new BigDecimal("100.00"), senderWallet.getBalance());
+        verify(walletRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should get balance of user wallet")
+    void testGetBalanceSuccess() {
+        when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(senderWallet));
+
+        BigDecimal balance = walletService.getBalance(1L);
+
+        assertEquals(new BigDecimal("100.00"), balance);
+    }
 }
